@@ -1,7 +1,7 @@
 const mongoose= require('mongoose');
 
 const leavesSchema= new mongoose.Schema({
-    userID: {
+    userId: {
         type:mongoose.Schema.Types.ObjectId ,
         ref: 'user', 
         // required: true
@@ -23,6 +23,7 @@ leaveType: {
     type: String,
     required: true,
     enum: ['Sick', 'Casual', 'Paid'],
+    default: 'Casual'
 },
 status:{
     type: String,

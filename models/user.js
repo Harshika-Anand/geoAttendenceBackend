@@ -32,6 +32,11 @@ const userSchema=new mongoose.Schema({
         type: String,
         required:true,
         unique:true
+      },
+      leaveBalance: {
+        casual: { type: Number, default: 10 }, // Default leave balance for casual leave
+        sick: { type: Number, default: 10 },   // Default leave balance for sick leave
+        paid: { type: Number, default: 5 }     // Default leave balance for paid leave
       }
 },{
     timestamps:true

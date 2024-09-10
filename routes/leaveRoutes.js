@@ -1,6 +1,6 @@
 const express = require('express');
-const authenticateUser = require('../../geoAttendenceBackend/middleware/authMiddleware');
-const authCompanyMiddleware = require('../../geoAttendenceBackend/middleware/authCompanyMiddleware');
+const authenticateUser = require('../middleware/authMiddleware.js');
+const authCompanyMiddleware = require('../middleware/authCompanyMiddleware');
 const router = express.Router();
 const{
     applyLeave,
