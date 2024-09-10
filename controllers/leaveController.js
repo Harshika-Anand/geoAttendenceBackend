@@ -157,11 +157,11 @@ exports.getLeavesOnADate = async (req, res) => {
 
 // Display leave status for each leave
 exports.getLeaveStatus = async (req, res) => {
-  const userId = req.user.id; // Get the logged-in user's ID from request
+  const userId = req.user.userId; // Get the logged-in user's ID from request
 
   try {
     // Fetch all leaves of the user
-    const leaves = await Leave.find({ userId }).select('startDate endDate status');
+    const leaves = await Leave.find({ userId: userId }).select('startDate endDate status');
 
     // Check if the user has applied for any leaves
     if (leaves.length === 0) {
