@@ -7,10 +7,9 @@ const { startOfDay, endOfDay, parseISO } = require('date-fns');
 
 
 const convertToIST = (utcDate) => {
-  return addMinutes(new Date(utcDate), 330); // Add 330 minutes (5 hours 30 minutes)
+  return addMinutes(new Date(utcDate), 330); 
 };
 
-// Function to update user location and handle check-in/out
 const updateLocation = async (req, res) => {
   const { userId, latitude, longitude, name } = req.body;
   const date = new Date();

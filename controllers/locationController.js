@@ -2,7 +2,6 @@ const Location = require('../models/location');
 const User = require('../models/user');
 const mongoose=require('mongoose');
 
-// Create or update location
 const upsertLocation = async (req, res) => {
   const { companyID, latitude, longitude } = req.body;
 
@@ -29,7 +28,6 @@ const upsertLocation = async (req, res) => {
   }
 };
 
-// Retrieve location by name
 const getLocation = async (req, res) => {
   const { companyID } = req.params;
 

@@ -19,13 +19,13 @@ const getCompanyProfile = async (req, res) => {
 
 const getCompanyInfoById = async (req, res) => {
   try {
-    const { companyID } = req.params; // Assuming companyId is passed as a URL parameter
+    const { companyID } = req.params; 
 
     if (!mongoose.isValidObjectId(companyID)) {
       return res.status(400).json({ message: 'Invalid Company ID' });
   }
-    // Find the company by ID
-    const company = await Company.findById(companyID).select('-password'); // Exclude the password field for security
+    
+    const company = await Company.findById(companyID).select('-password'); 
 
     if (!company) {
       return res.status(404).json({ message: 'Company not found' });
