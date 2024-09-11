@@ -12,19 +12,19 @@ const{
 
 
 //applying leave -> user side
-router.post('/apply',authenticateUser, applyLeave);
+router.post('/apply', applyLeave);
 
 //approve or reject the leaves -> company side
-router.post('/approve-reject',authCompanyMiddleware,approveRejectLeave);
+router.post('/approve-reject',approveRejectLeave);
 
 //getting all leaves of the user 
-router.get('/user-leaves', authenticateUser, getUserLeaves);
+router.post('/user-leaves', getUserLeaves);
 
 //get all employees leaves for a particular date
-router.get('/leave-on-date',authCompanyMiddleware, getLeavesOnADate);
+router.post('/leave-on-date', getLeavesOnADate);
 
 //get leave status for each leave
-router.get('/leave-status', getLeaveStatus);
+router.post('/leave-status', getLeaveStatus);
 
 module.exports=router;
 

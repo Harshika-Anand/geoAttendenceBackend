@@ -123,11 +123,10 @@ exports.getUserLeaves = async (req, res) => {
 };
 
 exports.getLeavesOnADate = async (req, res) => {
-  const { date } = req.body;
+  const { date, companyID } = req.body;
 
-  // Validate the input date
-  if (!date) {
-    return res.status(400).json({ message: 'Date is required' });
+  if (!date || !companyID) {
+    return res.status(400).json({ message: 'Date and Company ID are required' });
   }
 
   try {
@@ -137,16 +136,16 @@ exports.getLeavesOnADate = async (req, res) => {
     const leaveDateEnd = new Date(date);
     leaveDateEnd.setHours(23, 59, 59, 999); // Set to end of the day
 
-    // Query for leaves where the given date falls within the leave period
+    // Query for leaves where the given date falls within the leave period and match the companyId
     const leaves = await Leave.find({
+      companyID: companyID,               
       startDate: { $lte: leaveDateEnd },  // Leave started on or before the end of the given date
       endDate: { $gte: leaveDateStart }   // Leave ends on or after the start of the given date
     });
 
-
     // Check if no employees found on leave for the given date
     if (!leaves || leaves.length === 0) {
-      return res.status(404).json({ message: 'No employees found on leave for the given date' });
+      return res.status(404).json({ message: 'No employees found on leave for the given date and company' });
     }
 
     // Manually fetch user details for each leave entry
@@ -165,6 +164,7 @@ exports.getLeavesOnADate = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 
 // Display leave status for each leave
