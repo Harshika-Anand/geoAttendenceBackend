@@ -24,7 +24,7 @@ router.get('/user-leaves', authenticateUser, getUserLeaves);
 router.get('/leave-on-date',authCompanyMiddleware, getLeavesOnADate);
 
 //get leave status for each leave
-router.get('/leave-status', authenticateUser, getLeaveStatus);
+router.get('/leave-status', getLeaveStatus);
 
 module.exports=router;
 

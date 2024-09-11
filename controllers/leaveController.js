@@ -92,7 +92,7 @@ exports.approveRejectLeave = async (req, res) => {
 
 // Display user's all leaves -> accessing via the user ID
 exports.getUserLeaves = async (req, res) => {
-  const userId = req.user.id;
+  const {userId} = req.body;
   console.log(userId);
   try {
     if (!userId) {
@@ -122,9 +122,8 @@ exports.getUserLeaves = async (req, res) => {
   }
 };
 
-// Display all employees who took leave on a particular date -> company's side
 exports.getLeavesOnADate = async (req, res) => {
-  const { date } = req.body; // Corrected destructuring from req.body
+  const { date } = req.body;
 
   // Validate the input date
   if (!date) {
@@ -132,34 +131,52 @@ exports.getLeavesOnADate = async (req, res) => {
   }
 
   try {
-    // Convert the date to a Date object and set the time to the start of the day
-    const leaveDate = new Date(date);
+    const leaveDateStart = new Date(date);
+    leaveDateStart.setHours(0, 0, 0, 0); // Set to start of the day
 
-    // Query for leaves where the startDate or endDate matches the leaveDate
+    const leaveDateEnd = new Date(date);
+    leaveDateEnd.setHours(23, 59, 59, 999); // Set to end of the day
+
+    // Query for leaves where the given date falls within the leave period
     const leaves = await Leave.find({
-      $or: [
-        { startDate: leaveDate },
-        { endDate: leaveDate }
-      ]
-    }).populate('userId', 'name email'); // Populate userId with name and email of the employee
+      startDate: { $lte: leaveDateEnd },  // Leave started on or before the end of the given date
+      endDate: { $gte: leaveDateStart }   // Leave ends on or after the start of the given date
+    });
+
 
     // Check if no employees found on leave for the given date
-    if (leaves.length === 0) {
+    if (!leaves || leaves.length === 0) {
       return res.status(404).json({ message: 'No employees found on leave for the given date' });
     }
 
+    // Manually fetch user details for each leave entry
+    const employeesOnLeave = await Promise.all(leaves.map(async (leave) => {
+      const user = await User.findById(leave.userId, 'name email'); // Find user by userId
+      return {
+        user,
+        leaveDetails: leave
+      };
+    }));
+
     // Respond with the list of employees on leave
-    res.status(200).json({ employeesOnLeave: leaves });
+    res.status(200).json({ employeesOnLeave });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error('Error fetching leaves on date:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
+
 // Display leave status for each leave
 exports.getLeaveStatus = async (req, res) => {
-  const userId = req.user.userId; // Get the logged-in user's ID from request
+  const {userId} = req.body; 
 
   try {
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User Id is required' });
+    }
+    
     // Fetch all leaves of the user
     const leaves = await Leave.find({ userId: userId }).select('startDate endDate status');
 
